@@ -1,18 +1,24 @@
 #!/bin/bash
 
-echo "Lista de utilizatori si procesele lor"
+function ProcsForUser {
+    local user=$1
+
+    ps -u $user -o command | awk '{print $1}' | while read cmd; do
+        echo "Utilizator: $user Comanda: $cmd"
+
+        dir=./radacina/$user
+        mkdir -p $dir
+        echo $cmd >> $dir/procs
+    done
+
+
+    echo "SFARSIT LISTA"
+
+    return 0
+}
+
 
 mkdir -p ./radacina 
 
-ps -e -o user,command | awk '{print $1,$2}' | while read user cmd; do
-    echo "Utilizator: $user Comanda: $cmd"
 
-    dir=./radacina/$user
-
-    mkdir -p $dir
-
-    echo $cmd >> $dir/procs
-done
-
-
-echo "SFARSIT LISTA"
+ProcsForUser jojo
